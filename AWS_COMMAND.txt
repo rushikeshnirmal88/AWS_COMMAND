@@ -1,10 +1,13 @@
+
+# in directory of opt/tomcat/ make this file for making servcie of backend
+
 [Unit]
 Description=A Spring Boot Applcation for dgdc
 After=syslog.target
 
 [Service]
 User=ubuntu
-ExecStart=/opt/tomcat/webapps/DGDC.war
+ExecStart=/opt/tomcat/webapps/EYMS.war
 SuccessExitStatus=143
 
 [Install]
@@ -12,18 +15,22 @@ WantedBy=multi-user.target
 
   
 
-/etc/systemd/system
+cd /etc/systemd/system
 
-vim
+vim service name
 
-service name -	dgdc.service
+service name -	eyms.service
 
 
-systemctl enable dgdc
-systemctl start dgdc
-systemctl stop dgdc
-systemctl restart dgdc
-systemctl status dgdc
+
+
+systemctl enable eyms
+systemctl start eyms
+systemctl stop eyms
+systemctl restart eyms
+systemctl status eyms
+#########################################################################
+
 
 systemctl enable nginx
 systemctl start nginx
@@ -31,16 +38,16 @@ systemctl stop nginx
 systemctl restart nginx
 systemctl status nginx
 
-/etc/nginx/conf.d/
+cd /etc/nginx/conf.d/
 
 
-			codewithdurgesh.com.conf
+			43.204.152.51.conf
 
 
 server {
   listen 0.0.0.0:80;
-  root  /home/ubuntu/project/build; 
-  server_name 13.232.86.140;	
+  root  /home/ubuntu/build; 
+  server_name 13.200.201.230;	
   location / {
     try_files $uri $uri/ /index.html;
   }
@@ -75,23 +82,33 @@ server {
 
 }
 
+##########################################################################
+
 Rushi@801
 
 create user 'rushikesh'@'%' identified by 'Rushi@801';
 
-GRANT ALL PRIVILEGES ON *.* TO 'rushikesh'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;
 
 FLUSH PRIVILEGES;
 
 
+* To Dump SQL Data In DataBase Follow This Step 
+
+ # mysql -u sahil -p
+
+ # CREATE DATABASE IF NOT EXISTS DGDC;
+
+ # USE DGDC;
+
+ # SOURCE /home/ubuntu/dgdc_20240220.sql;
+
+ # SHOW TABLES;
 
 
 
 
 sha512sum -c apache-tomcat-10.1.18.tar.gz.sha512
-
-
-
 cd apache-tomcat-10.1.18
 
  export CATALINA_HOME=$(pwd)
@@ -138,28 +155,31 @@ echo $JAVA_HOME
 /usr/lib/jvm/java-17-openjdk-amd64/
 
 #Step 3: Create Tomcat User
+
 sudo useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat 
 
 #To Check User in created or Not 
+
 cat /etc/passwd
 
 #To Install Tomcat 
-wget https://downloads.apache.org/tomcat/tomcat-10/v10.1.18/bin/apache-tomcat-10.1.18.tar.gz
 
-tar -zxvf apache-tomcat-10.1.18.tar.gz -C /opt/tomcat 
+wget https://downloads.apache.org/tomcat/tomcat-10/v10.1.19/bin/apache-tomcat-10.1.19.tar.gz
+
+tar -zxvf apache-tomcat-10.1.19.tar.gz -C /opt/tomcat 
 
 mv * /opt/tomcat/
 
  cd /opt/tomcat/
 
 #Step 5: Set Permissions
-#First, we’ll change the directory ownership to tomcat.
 
+#First, we’ll change the directory ownership to tomcat.
 This will move all files and directories from the current directory (apache-tomcat-10.1.18) to the /opt/tomcat/ directory.
 
 
 
-Set Permissions
+#Set Permissions
 
 sudo chown -R tomcat: /opt/tomcat 
 sudo sh -c 'chmod +x /opt/tomcat/bin/*.sh' 
@@ -248,3 +268,92 @@ sudo systemctl restart tomcat
 sudo ufw allow 8080
 apt install firewalld
 firewall-cmd --reload
+
+
+To Uninstall 
+
+sudo apt remove firewalld
+
+##########################################################################
+sudo chmod 777 /home/ubuntu/build
+
+sudo chmod 777 /home/ubuntu/dgdc_20240220.sql
+
+
+This recursively changes the ownership of all files and subdirectories under /home/ubuntu/build to the root user and group.
+
+sudo chown -R root:root /home/ubuntu/build
+
+sudo chown root:root /home/ubuntu/dgdc_20240220.sql
+
+sudo chmod 777 /home/ubuntu/build
+
+sudo chmod 777 /home/ubuntu/dgdc_20240220.sql
+
+
+
+
+
+##########################################################################
+
+
+
+# Example: Adjusting permissions for the webapps directory
+sudo chmod -R 755 /opt/tomcat/webapps
+
+
+#To Change CAse Of MySQl 
+
+1) First login in ubuntu su 
+
+2)sudo service mysql stop
+
+3)sudo rm -rf /var/lib/mysql
+
+4)sudo mkdir /var/lib/mysql  
+
+5)sudo chown mysql:mysql /var/lib/mysql
+
+6)sudo chmod 700 /var/lib/mysql
+
+7)sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+
+then add this in file 
+lower_case_table_names = 1
+
+8)sudo mysqld --defaults-file=/etc/mysql/my.cnf --initialize --lower_case_table_names=1 --user=mysql --console
+
+9)sudo service mysql start
+
+10)sudo grep 'temporary password' /var/log/mysql/error.log
+
+
+jlk?v2;%!P_
+
+11)sudo mysql -u root -p
+
+12)ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';
+
+13)sudo mysql_secure_installation
+
+14)sudo mysql -u root -p
+
+
+15)create user 'rushikesh'@'%' identified by 'Rushi@801';
+
+16)GRANT ALL PRIVILEGES ON *.* TO 'rushikesh'@'%' WITH GRANT OPTION;
+
+
+17)SHOW VARIABLES LIKE 'lower_case_%';
+
+18) create database;
+
+
+
+
+
+
+
+
+
+
